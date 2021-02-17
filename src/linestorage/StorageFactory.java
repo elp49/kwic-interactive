@@ -1,8 +1,6 @@
-package configuration;
+package linestorage;
 
-import linestorage.CoreLineStorageProcessor;
-import linestorage.FileLineStorageProcessor;
-import linestorage.LineStorageProcessor;
+import configuration.StoragePreferences;
 import util.FileReader;
 import util.FileWriter;
 
@@ -15,9 +13,9 @@ public class StorageFactory {
 		LineStorageProcessor storage = null;
 		
 		// Test storage IO preferences.
-		String method = preferences.getStorageMethod();
+		String method = preferences.getMethod();
 		if (method.equalsIgnoreCase(StoragePreferences.FILE)) {
-			String path = preferences.getStorageFilePath();
+			String path = preferences.getFilePath();
 			FileReader reader = new FileReader(path);
 			FileWriter writer = new FileWriter(path);
 			storage = new FileLineStorageProcessor(reader, writer);

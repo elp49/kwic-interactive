@@ -29,6 +29,11 @@ public class ConsoleReader implements Readable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		// Test if line is empty or blank.
+		if (line.isEmpty() || line.isBlank()) {
+			line = null;
+		}
 
 		return line;
 	}

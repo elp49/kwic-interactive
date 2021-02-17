@@ -1,41 +1,38 @@
 package configuration;
 
-public class StoragePreferences extends Preferences {
+public class LineOutputPreferences extends Preferences {
 
-	public static final String CORE = "CORE";
-
-	public StoragePreferences(ConfigurationProcessor config) {
+	public LineOutputPreferences(ConfigurationProcessor config) {
 		super(config);
 	}
 
 	@Override
 	public String getType() {
-		return "storage";
+		return "line output";
 	}
 
 	@Override
 	protected String getMethodKey() {
-		return "LINE_STORAGE_METHOD";
+		return "LINE_OUTPUT_METHOD";
 	}
 
 	@Override
 	protected String getFilePathKey() {
-		return "LINE_STORAGE_FILE";
+		return "LINE_OUTPUT_FILE";
 	}
 
 	@Override
 	protected String[] getMethodValues() {
-		return new String[] { CORE, FILE };
+		return new String[] { CONSOLE, FILE };
 	}
 
 	@Override
 	protected String getDefaultMethod() {
-		return CORE;
+		return CONSOLE;
 	}
 
 	@Override
 	protected String getDefaultFilePath() {
-		return "storage.txt";
+		return "data_output.txt";
 	}
-
 }

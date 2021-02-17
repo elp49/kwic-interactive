@@ -14,13 +14,26 @@ public class CoreLineStorageProcessor extends LineStorageProcessor {
 	}
 
 	@Override
+	public String getType() {
+		return CORE;
+	}
+
+	@Override
 	public void addLine(Line line) {
-		lines.add(line);
+		// Test if line is not null, empty or blank.
+		if (line != null && !line.isEmpty() && !line.isBlank()) {
+			lines.add(line);
+		}
 	}
 
 	@Override
 	public List<Line> getAllLines() {
 		return lines;
+	}
+
+	@Override
+	public void clear() {
+		lines.clear();
 	}
 
 }

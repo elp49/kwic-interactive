@@ -13,7 +13,11 @@ public class FileWriter implements Writable {
 
 	public FileWriter(String path) {
 		this.path = path;
+		createNewFile(path);
+		initializeFileWriter(true);
+	}
 
+	private void createNewFile(String path) {
 		try {
 			File myObj = new File(path);
 			myObj.createNewFile();
@@ -21,10 +25,11 @@ public class FileWriter implements Writable {
 			System.err.println("An error occurred while creating file " + path + ".");
 			e.printStackTrace();
 		}
+	}
 
+	private void initializeFileWriter(boolean append) {
 		try {
-			// Initialize file writer.
-			writer = new java.io.FileWriter(path, true);
+			writer = new java.io.FileWriter(path, append);
 		} catch (IOException e) {
 			System.out.println("An error occurred while opening file " + path + " for writing.");
 			e.printStackTrace();
@@ -47,17 +52,16 @@ public class FileWriter implements Writable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	public void writeAllLines(List<String> lines) {
+	public void writeAllLines(List<String> allLines) {
+		initializeFileWriter(true);
+
 		try {
-			// Initialize file writer.
-			writer = new java.io.FileWriter(path, true);
-			for (String l : lines) {
-				// Append string with new line
-				writer.append(l + System.lineSeparator());
+			for (String line : allLines) {
+				writer.append(line + LINE_SEPARATOR);
 			}
-			writer.close();
+			close();
 		} catch (IOException e) {
 			System.out.println("An error occurred while writing to file " + path + ".");
 			e.printStackTrace();
@@ -73,6 +77,14 @@ public class FileWriter implements Writable {
 			System.out.println("An error occurred while closing file " + path + ".");
 			e.printStackTrace();
 		}
+	}
+
+	public void clearFile() {
+		close();
+		// Initialize file to overwrite contents.
+		initializeFileWriter(false);
+		// Write empty string to file.
+		writeLine("");
 	}
 
 }

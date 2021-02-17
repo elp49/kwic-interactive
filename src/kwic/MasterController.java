@@ -6,15 +6,17 @@ package kwic;
 import java.io.FileNotFoundException;
 
 import configuration.ConfigurationProcessor;
-import configuration.IoPreferences;
-import configuration.IoProcessorFactory;
-import configuration.LineIoPreferences;
-import configuration.StorageFactory;
+import configuration.LineInputPreferences;
+import configuration.LineOutputPreferences;
+import configuration.Preferences;
 import configuration.StoragePreferences;
-import configuration.UserIoPreferences;
+import configuration.UserOutputPreferences;
+import lineio.InputProcessorFactory;
 import lineio.LineInputProcessor;
 import lineio.LineOutputProcessor;
+import lineio.OutputProcessorFactory;
 import linestorage.LineStorageProcessor;
+import linestorage.StorageFactory;
 import shifting.CircularShifter;
 import shifting.Shifter;
 import sorting.AlphabeticalSorter;
@@ -48,18 +50,53 @@ public class MasterController {
 	}
 
 	public void run() {
+		initializeConfig();
 		initialize();
 
-		String command = user.getUserCommand(UserCommandOperator.MAIN_COMMANDS);
+		Preferences lineInputPreferences = new LineInputPreferences(config);
 
-		if (command.equalsIgnoreCase(UserCommandOperator.RUN)) {
-			readLineInput();
-			shiftLines();
-			sortLines();
-			printLineOutput();
+		String command = "";
+		while (!(command = user.getUserCommand(UserCommandOperator.MAIN_COMMANDS))
+				.equalsIgnoreCase(UserCommandOperator.QUIT)) {
 
-			runInteractiveMode();
+			if (command.equalsIgnoreCase(UserCommandOperator.RUN_CONSOLE)) {
+				lineInputPreferences.setMethod(Preferences.CONSOLE);
+				run(lineInputPreferences);
+			} else if (command.equalsIgnoreCase(UserCommandOperator.RUN_FILE)) {
+				lineInputPreferences.setMethod(Preferences.FILE);
+				run(lineInputPreferences);
+			} else if (command.equalsIgnoreCase(UserCommandOperator.RUN_INTERACTIVE)) {
+				runInteractiveMode();
+			}
+
+			initialize();
 		}
+	}
+
+	private void run(Preferences lineInputPreferences) {
+		// Initialize line input reader.
+		InputProcessorFactory inputFactory = new InputProcessorFactory();
+		Readable lineReader = inputFactory.getReader(lineInputPreferences);
+
+		user.writeLine(" - Reading input from " + lineReader.getType() + ".");
+		user.writeLine("");
+		lineIn.parse(lineReader);
+
+		user.writeLine(" - Shifting lines.");
+		shifter.shift();
+		user.writeLine("");
+
+		user.writeLine(" - Sorting lines.");
+		sorter.sort();
+		user.writeLine("");
+
+		user.writeLine(" - Writing output to " + lineOut.getType() + ".");
+		lineOut.print();
+		user.writeLine("");
+
+		user.writeLine(" - Clearing line storage.");
+		storage.clear();
+		user.writeLine("");
 	}
 
 	private void runInteractiveMode() {
@@ -69,34 +106,6 @@ public class MasterController {
 		} else if (command.equalsIgnoreCase(UserCommandOperator.DELETE)) {
 		} else if (command.equalsIgnoreCase(UserCommandOperator.PRINT)) {
 		}
-	}
-
-	private void readLineInput() {
-		user.writeLine("Reading input from " + lineIn.getType() + ".");
-		lineIn.parse();
-	}
-
-	private void shiftLines() {
-		user.writeLine("Shifting lines.");
-		shifter.shift();
-	}
-
-	private void sortLines() {
-		user.writeLine("Sorting lines.");
-		sorter.sort();
-	}
-
-	private void printLineOutput() {
-		user.writeLine("Writing output to " + lineOut.getType() + ".");
-		lineOut.print();
-	}
-
-	private void initialize() {
-		initializeConfig();
-		IoProcessorFactory ioFactory = new IoProcessorFactory();
-		initializeUserCommandOperator(ioFactory);
-		initializeLineStorage();
-		initializeModules(ioFactory);
 	}
 
 	private void initializeConfig() {
@@ -113,29 +122,35 @@ public class MasterController {
 		}
 	}
 
-	private void initializeUserCommandOperator(IoProcessorFactory ioFactory) {
-		IoPreferences userIoPreferences = new UserIoPreferences(config);
+	private void initialize() {
+		OutputProcessorFactory outputFactory = new OutputProcessorFactory();
+		initializeUserCommandOperator(outputFactory);
+		initializeModules(outputFactory);
+	}
+
+	private void initializeUserCommandOperator(OutputProcessorFactory outputFactory) {
+		Preferences userOutputPreferences = new UserOutputPreferences(config);
 		Readable userIn = new ConsoleReader();
-		Writable userOut = ioFactory.getWriter(userIoPreferences);
+		Writable userOut = outputFactory.getWriter(userOutputPreferences);
 		user = new UserCommandOperator(userIn, userOut);
+	}
+
+	private void initializeModules(OutputProcessorFactory outputFactory) {
+		initializeLineStorage();
+		// Preferences which determine console or file line output.
+		Preferences lineOutputPreferences = new LineOutputPreferences(config);
+		Writable lineWriter = outputFactory.getWriter(lineOutputPreferences);
+
+		lineIn = new LineInputProcessor(storage);
+		shifter = new CircularShifter(storage);
+		sorter = new AlphabeticalSorter(shifter);
+		lineOut = new LineOutputProcessor(lineWriter, sorter);
 	}
 
 	private void initializeLineStorage() {
 		StoragePreferences storageIoPreferences = new StoragePreferences(config);
 		StorageFactory storageFactory = new StorageFactory();
 		storage = storageFactory.getLineStorageProcessor(storageIoPreferences);
-	}
-
-	private void initializeModules(IoProcessorFactory ioFactory) {
-		IoPreferences lineIoPreferences = new LineIoPreferences(config);
-
-		Readable lineReader = ioFactory.getReader(lineIoPreferences);
-		Writable lineWriter = ioFactory.getWriter(lineIoPreferences);
-
-		lineIn = new LineInputProcessor(lineReader, storage);
-		shifter = new CircularShifter(storage);
-		sorter = new AlphabeticalSorter(shifter);
-		lineOut = new LineOutputProcessor(lineWriter, sorter);
 	}
 
 }

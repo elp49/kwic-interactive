@@ -16,7 +16,11 @@ public class FileReader implements Readable {
 
 	public FileReader(String path) {
 		this.path = path;
+		createNewFile(path);
+		initializeFileReader();
+	}
 
+	private void createNewFile(String path) {
 		try {
 			File myObj = new File(path);
 			myObj.createNewFile();
@@ -24,7 +28,9 @@ public class FileReader implements Readable {
 			System.err.println("An error occurred while creating file " + path + ".");
 			e.printStackTrace();
 		}
+	}
 
+	private void initializeFileReader() {
 		try {
 			reader = Files.newBufferedReader(Paths.get(path));
 		} catch (InvalidPathException | IOException e) {
@@ -43,12 +49,10 @@ public class FileReader implements Readable {
 		String line = null;
 
 		try {
-			// Read line from file.
 			line = reader.readLine();
 
 			// Test if end of file.
 			if (line == null) {
-				// Close file.
 				close();
 			}
 		} catch (IOException e) {
@@ -62,9 +66,8 @@ public class FileReader implements Readable {
 	@Override
 	public List<String> readAllLines() {
 		List<String> allLines = new ArrayList<String>();
-		
 		String line = readLine();
-		
+
 		while (line != null) {
 			allLines.add(line);
 			line = readLine();

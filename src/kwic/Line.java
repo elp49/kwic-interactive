@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Line {
-	
+
 	public static final String WORD_SEPARATOR = " ";
 
 	private List<String> words = null;
@@ -51,5 +51,41 @@ public class Line {
 	public void add(String word) {
 		words.add(word);
 	}
-	
+
+	public boolean isEmpty() {
+		boolean isEmpty = false;
+
+		boolean allWordsAreEmpty = true;
+		for (String w : words) {
+			if (!w.isEmpty()) {
+				allWordsAreEmpty = false;
+				break;
+			}
+		}
+
+		if (allWordsAreEmpty) {
+			isEmpty = true;
+		}
+
+		return isEmpty;
+	}
+
+	public boolean isBlank() {
+		boolean isBlank = false;
+
+		boolean allWordsAreBlank = true;
+		for (String w : words) {
+			if (!w.isBlank()) {
+				allWordsAreBlank = false;
+				break;
+			}
+		}
+
+		if (allWordsAreBlank) {
+			isBlank = true;
+		}
+
+		return isBlank;
+	}
+
 }

@@ -18,8 +18,16 @@ public class FileLineStorageProcessor extends LineStorageProcessor {
 	}
 
 	@Override
+	public String getType() {
+		return FILE;
+	}
+
+	@Override
 	public void addLine(Line line) {
-		writer.writeLine(line.toString());
+		// Test if line is not null, empty or blank.
+		if (line != null && !line.isEmpty() && !line.isBlank()) {
+			writer.writeLine(line.toString());
+		}
 	}
 
 	@Override
@@ -27,11 +35,18 @@ public class FileLineStorageProcessor extends LineStorageProcessor {
 		List<Line> allLines = new ArrayList<Line>();
 
 		// Create Line objects for each line string.
-		for (String line : reader.readAllLines()) {
+		String line = reader.readLine();
+		while (line != null) {
 			allLines.add(new Line(line));
+			line = reader.readLine();
 		}
 
 		return allLines;
+	}
+
+	@Override
+	public void clear() {
+		writer.clearFile();
 	}
 
 }

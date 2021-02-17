@@ -8,9 +8,11 @@ public class UserCommandOperator {
 	private Readable in = null;
 	private Writable out = null;
 
-	public static final String RUN = "Run";
+	public static final String RUN_CONSOLE = "Run with console input";
+	public static final String RUN_FILE = "Run with file input";
+	public static final String RUN_INTERACTIVE = "Open interactive window";
 	public static final String QUIT = "Quit";
-	public static final String[] MAIN_COMMANDS = { RUN, QUIT, };
+	public static final String[] MAIN_COMMANDS = { RUN_CONSOLE, RUN_FILE, RUN_INTERACTIVE, QUIT, };
 
 	public static final String ADD = "Add";
 	public static final String DELETE = "Delete";
