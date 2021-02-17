@@ -1,0 +1,27 @@
+# config
+
+# Set preferences here. Variables should only be set to a single value.
+# If an IO method is not set to FILE, then setting the file path variable does
+# nothing.
+
+# Variables:
+#	- USER_OUTPUT_METHOD	the user output method (Legal Values: CONSOLE, FILE)
+#	- USER_OUTPUT_FILE		the user output file path
+#	- LINE_INPUT_METHOD		the line input method (Legal Values: CONSOLE, FILE)
+#	- LINE_INPUT_FILE		the line input file path
+#	- LINE_OUTPUT_METHOD	the line output method (Legal Values: CONSOLE, FILE)
+#	- LINE_OUTPUT_FILE		the line output file path
+#	- LINE_STORAGE_METHOD	the line storage method (Legal Values: CORE, FILE)
+#	- LINE_STORAGE_FILE		the line storage file path
+
+USER_OUTPUT_METHOD=CONSOLE
+USER_OUTPUT_FILE=user_output.log
+
+LINE_INPUT_METHOD=FILE
+LINE_INPUT_FILE=data_input.txt
+
+LINE_OUTPUT_METHOD=CONSOLE
+LINE_OUTPUT_FILE=data_output.txt
+
+LINE_STORAGE_METHOD=FILE
+LINE_STORAGE_FILE=storage.txt
