@@ -8,49 +8,46 @@ import linestorage.LineRetrievable;
 
 public class CircularShifter extends Shifter {
 
-	private List<Line> shiftedLines = null;
+	private List<Line> allShiftedLines = null;
 
 	public CircularShifter(LineRetrievable storage) {
 		super(storage);
-		shiftedLines = new ArrayList<>();
+		allShiftedLines = new ArrayList<>();
 	}
 
 	@Override
 	public List<Line> getAllLines() {
+		return allShiftedLines;
+	}
+
+	public void shift() {
+		for (Line line : storage.getAllLines()) {
+			List<Line> shiftedLines = getShiftedLineList(line);
+			allShiftedLines.addAll(shiftedLines);
+		}
+	}
+
+	private List<Line> getShiftedLineList(Line line) {
+		List<Line> shiftedLines = new ArrayList<>();
+
+		line = new Line(line);
+		for (int i = 0; i < line.size(); i++) {
+			// Add line to shifted line list.
+			shiftedLines.add(line);
+
+			// Shift line.
+			line = getShiftedLine(line);
+		}
+
 		return shiftedLines;
 	}
 
-	@Override
-	public void shift() {
-		List<Line> allLines = storage.getAllLines();
-
-		// Test if storage is not null or empty.
-		if (allLines != null && !allLines.isEmpty()) {
-			for (Line line: allLines) {
-				shiftLine(line);
-			}
-		}
-	}
-	
-	private void shiftLine(Line line) {
-		// Add first line to shifted line list.
+	private Line getShiftedLine(Line line) {
 		Line shiftedLine = new Line(line);
-		shiftedLines.add(shiftedLine);
+		String firstWord = shiftedLine.remove(0);
 
-		// Test if line has more than one word.
-		int numWords = shiftedLine.size();
-		if (numWords > 1) {
-			for (int i = 1; i < numWords; i++) {
-				// Get the first word.
-				String firstWord = shiftedLine.get(0);
-				// Get the rest of the words.
-				shiftedLine = shiftedLine.subList(1, shiftedLine.size());
-				// Append first word to the end of list.
-				shiftedLine.add(firstWord);
-				// Append shifted line to list.
-				shiftedLines.add(shiftedLine);
-			}
-		}
+		shiftedLine.add(firstWord);
+		return shiftedLine;
 	}
 
 }

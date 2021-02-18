@@ -11,6 +11,10 @@ public class LineOutputProcessor {
 	private Writable writer = null;
 	private LineRetrievable storage = null;
 
+	public String path() {
+		return writer.path();
+	}
+
 	public String getType() {
 		return writer.getType();
 	}
@@ -23,7 +27,6 @@ public class LineOutputProcessor {
 	public void print() {
 		// Get line from storage.
 		List<Line> allLines = storage.getAllLines();
-
 		for (String line : Line.toString(allLines)) {
 			writer.writeLine(line);
 		}

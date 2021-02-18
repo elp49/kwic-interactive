@@ -8,35 +8,48 @@ import shifting.Shifter;
 
 public class AlphabeticalSorter extends Sorter {
 
-	private List<Line> sortedLines = null;
+	private List<Line> allSortedLines = null;
 
 	public AlphabeticalSorter(Shifter shifter) {
 		super(shifter);
-		sortedLines = new ArrayList<>();
+		allSortedLines = new ArrayList<>();
 	}
 
 	@Override
 	public List<Line> getAllLines() {
-		return sortedLines;
+		return allSortedLines;
 	}
 
 	@Override
 	public void sort() {
 		List<Line> allLines = shifter.getAllLines();
-
-		// Test if line list is not null or empty.
-		if (allLines != null && !allLines.isEmpty()) {
-			// Remove first line and add it to sorted line list.
-			sortedLines.add(allLines.remove(0));
-
-			for (Line unsortedLine : allLines) {
-				sortLine(unsortedLine);
-			}
-		}
+		List<Line> sortedLines = getSortedLineList(allLines);
+		allSortedLines.addAll(sortedLines);
 	}
 
-	private void sortLine(Line unsortedLine) {
-		// Get the line sting and remove white space.
+	private List<Line> getSortedLineList(List<Line> unsortedLines) {
+		List<Line> sortedLines = new ArrayList<>();
+
+		// Test if unsorted line list is not null or empty.
+		if (unsortedLines != null && !unsortedLines.isEmpty()) {
+			// Add first line to empty sorted line list.
+			sortedLines.add(unsortedLines.get(0));
+
+			// Add the rest of the lines in their approproate positions.
+			for (int i = 1; i < unsortedLines.size(); i++) {
+				Line line = unsortedLines.get(i);
+				int index = getSortedLineIndex(sortedLines, line);
+				sortedLines.add(index, line);
+			}
+		}
+
+		return sortedLines;
+	}
+
+	private int getSortedLineIndex(List<Line> sortedLines, Line unsortedLine) {
+		int index = 0;
+
+		// Get the line string and remove white space.
 		String unsortedLineWithoutSpaces = getLineStringWithoutSpaces(unsortedLine);
 		boolean isSorted = false;
 
@@ -47,8 +60,8 @@ public class AlphabeticalSorter extends Sorter {
 
 			// Compare the two lines strings.
 			if (lineIsLessThanOrEqualTo(unsortedLineWithoutSpaces, sortedLineWithoutSpaces)) {
-				// Insert line into sorted position.
-				sortedLines.add(i, unsortedLine);
+				// Record the current index and exit loop.
+				index = i;
 				isSorted = true;
 				break;
 			}
@@ -56,8 +69,10 @@ public class AlphabeticalSorter extends Sorter {
 
 		// Test if line was not sorted.
 		if (!isSorted) {
-			sortedLines.add(unsortedLine);
+			index = sortedLines.size();
 		}
+
+		return index;
 	}
 
 	private String getLineStringWithoutSpaces(Line line) {

@@ -36,4 +36,22 @@ public class CoreLineStorageProcessor extends LineStorageProcessor {
 		lines.clear();
 	}
 
+	@Override
+	public void remove(int index) {
+		lines.remove(index);
+	}
+
+	@Override
+	public String[] asArray() {
+		int numLines = lines.size();
+		String[] allLinesAsStrings = new String[numLines];
+
+		for (int i = 0; i < numLines; i++) {
+			String line = lines.get(i).toString();
+			allLinesAsStrings[i] = line;
+		}
+
+		return allLinesAsStrings;
+	}
+
 }

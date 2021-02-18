@@ -17,7 +17,11 @@ public class FileReader implements Readable {
 	public FileReader(String path) {
 		this.path = path;
 		createNewFile(path);
-		initializeFileReader();
+	}
+
+	@Override
+	public String path() {
+		return path;
 	}
 
 	private void createNewFile(String path) {
@@ -46,18 +50,16 @@ public class FileReader implements Readable {
 
 	@Override
 	public String readLine() {
-		String line = null;
+		// Test if file reader is null.
+		if (reader == null) {
+			initializeFileReader();
+		}
 
-		try {
-			line = reader.readLine();
+		String line = _readLine();
 
-			// Test if end of file.
-			if (line == null) {
-				close();
-			}
-		} catch (IOException e) {
-			System.err.println("An error occurred while reading from file " + path + ".");
-			e.printStackTrace();
+		// Test if end of file.
+		if (line == null) {
+			close();
 		}
 
 		return line;
@@ -66,14 +68,30 @@ public class FileReader implements Readable {
 	@Override
 	public List<String> readAllLines() {
 		List<String> allLines = new ArrayList<String>();
-		String line = readLine();
 
-		while (line != null) {
+		initializeFileReader();
+
+		String line = "";
+		while ((line = _readLine()) != null) {
 			allLines.add(line);
-			line = readLine();
 		}
 
+		close();
+
 		return allLines;
+	}
+
+	private String _readLine() {
+		String line = null;
+
+		try {
+			line = reader.readLine();
+		} catch (IOException e) {
+			System.err.println("An error occurred while reading from file " + path + ".");
+			e.printStackTrace();
+		}
+
+		return line;
 	}
 
 	private void close() {
@@ -84,6 +102,8 @@ public class FileReader implements Readable {
 			System.err.println("An error occurred while closing file " + path + ".");
 			e.printStackTrace();
 		}
+
+		reader = null;
 	}
 
 }

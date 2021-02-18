@@ -8,6 +8,11 @@ public class ConsoleWriter implements Writable {
 	}
 
 	@Override
+	public String path() {
+		return "console";
+	}
+
+	@Override
 	public String getType() {
 		return "console";
 	}
@@ -19,7 +24,7 @@ public class ConsoleWriter implements Writable {
 
 	@Override
 	public void writeAllLines(List<String> allLines) {
-		for (String line: allLines) {
+		for (String line : allLines) {
 			System.out.println(line);
 		}
 	}

@@ -52,6 +52,10 @@ public class Line {
 		words.add(word);
 	}
 
+	public String remove(int index) {
+		return words.remove(index);
+	}
+
 	public boolean isEmpty() {
 		boolean isEmpty = false;
 

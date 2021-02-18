@@ -34,11 +34,9 @@ public class FileLineStorageProcessor extends LineStorageProcessor {
 	public List<Line> getAllLines() {
 		List<Line> allLines = new ArrayList<Line>();
 
-		// Create Line objects for each line string.
-		String line = reader.readLine();
-		while (line != null) {
+		// Read all lines from file reader.
+		for (String line : reader.readAllLines()) {
 			allLines.add(new Line(line));
-			line = reader.readLine();
 		}
 
 		return allLines;
@@ -47,6 +45,31 @@ public class FileLineStorageProcessor extends LineStorageProcessor {
 	@Override
 	public void clear() {
 		writer.clearFile();
+	}
+
+	@Override
+	public void remove(int index) {
+		List<Line> allLines = getAllLines();
+		allLines.remove(index);
+		writer.clearFile();
+
+		for (Line line : allLines) {
+			addLine(line);
+		}
+	}
+
+	@Override
+	public String[] asArray() {
+		List<Line> allLines = getAllLines();
+		int numLines = allLines.size();
+		String[] allLinesAsStrings = new String[numLines];
+
+		for (int i = 0; i < numLines; i++) {
+			String line = allLines.get(i).toString();
+			allLinesAsStrings[i] = line;
+		}
+
+		return allLinesAsStrings;
 	}
 
 }

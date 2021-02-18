@@ -29,7 +29,7 @@ public abstract class Preferences {
 		method = getDefaultMethod();
 		path = getDefaultFilePath();
 	}
-	
+
 	public void setMethod(String method) {
 		this.method = method;
 		validate();

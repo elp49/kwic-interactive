@@ -11,7 +11,7 @@ public class StorageFactory {
 
 	public LineStorageProcessor getLineStorageProcessor(StoragePreferences preferences) {
 		LineStorageProcessor storage = null;
-		
+
 		// Test storage IO preferences.
 		String method = preferences.getMethod();
 		if (method.equalsIgnoreCase(StoragePreferences.FILE)) {
@@ -19,11 +19,10 @@ public class StorageFactory {
 			FileReader reader = new FileReader(path);
 			FileWriter writer = new FileWriter(path);
 			storage = new FileLineStorageProcessor(reader, writer);
-		}
-		else if (method.equalsIgnoreCase(StoragePreferences.CORE)) {
+		} else if (method.equalsIgnoreCase(StoragePreferences.CORE)) {
 			storage = new CoreLineStorageProcessor();
 		}
-		
+
 		return storage;
 	}
 }

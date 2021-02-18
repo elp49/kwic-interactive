@@ -8,7 +8,7 @@ public abstract class LineStorageProcessor implements LineStorable, LineRetrieva
 
 	public static final String CORE = "CORE";
 	public static final String FILE = "FILE";
-	
+
 	public abstract String getType();
 
 	@Override
@@ -16,7 +16,11 @@ public abstract class LineStorageProcessor implements LineStorable, LineRetrieva
 
 	@Override
 	public abstract List<Line> getAllLines();
-	
+
 	public abstract void clear();
+
+	public abstract void remove(int index);
+
+	public abstract String[] asArray();
 
 }

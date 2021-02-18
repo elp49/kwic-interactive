@@ -11,6 +11,7 @@ import configuration.LineOutputPreferences;
 import configuration.Preferences;
 import configuration.StoragePreferences;
 import configuration.UserOutputPreferences;
+import interactive.InteractiveWindowDriver;
 import lineio.InputProcessorFactory;
 import lineio.LineInputProcessor;
 import lineio.LineOutputProcessor;
@@ -78,7 +79,7 @@ public class MasterController {
 		InputProcessorFactory inputFactory = new InputProcessorFactory();
 		Readable lineReader = inputFactory.getReader(lineInputPreferences);
 
-		user.writeLine(" - Reading input from " + lineReader.getType() + ".");
+		user.writeLine(" - Reading input from " + lineReader.path() + ".");
 		user.writeLine("");
 		lineIn.parse(lineReader);
 
@@ -90,7 +91,8 @@ public class MasterController {
 		sorter.sort();
 		user.writeLine("");
 
-		user.writeLine(" - Writing output to " + lineOut.getType() + ".");
+		user.writeLine(" - Writing output to " + lineOut.path() + ".");
+		user.writeLine("");
 		lineOut.print();
 		user.writeLine("");
 
@@ -100,11 +102,16 @@ public class MasterController {
 	}
 
 	private void runInteractiveMode() {
-		String command = user.getUserCommand(UserCommandOperator.INTERACTIVE_COMMANDS);
+		initializeLineStorage();
+		LineStorageProcessor threadStorage = storage;
+		InteractiveWindowDriver interactiveDriver = new InteractiveWindowDriver(threadStorage);
+		Thread interactiveDriverThread = new Thread(interactiveDriver);
+		interactiveDriverThread.start();
 
-		if (command.equalsIgnoreCase(UserCommandOperator.ADD)) {
-		} else if (command.equalsIgnoreCase(UserCommandOperator.DELETE)) {
-		} else if (command.equalsIgnoreCase(UserCommandOperator.PRINT)) {
+		try {
+			interactiveDriverThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -15,6 +15,11 @@ public class ConsoleReader implements Readable {
 	}
 
 	@Override
+	public String path() {
+		return "console";
+	}
+
+	@Override
 	public String getType() {
 		return "console";
 	}
@@ -29,7 +34,7 @@ public class ConsoleReader implements Readable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		// Test if line is empty or blank.
 		if (line.isEmpty() || line.isBlank()) {
 			line = null;
@@ -41,9 +46,9 @@ public class ConsoleReader implements Readable {
 	@Override
 	public List<String> readAllLines() {
 		List<String> allLines = new ArrayList<String>();
-		
+
 		String line = readLine();
-		
+
 		while (line != null) {
 			allLines.add(line);
 			line = readLine();

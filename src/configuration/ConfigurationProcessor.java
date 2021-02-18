@@ -38,7 +38,7 @@ public class ConfigurationProcessor {
 		if (!props.containsKey(key)) {
 			throw new ConfigurationException("Configuration file does not contain the key \"" + key + "\".");
 		}
-		
+
 		return props.getProperty(key);
 	}
 
